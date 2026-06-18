@@ -1,0 +1,6 @@
+*.retry
+*.log
+.vagrant/
+*.pem
+*.key
+*.crt

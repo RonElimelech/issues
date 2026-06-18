@@ -1,0 +1,23 @@
+global
+  log /dev/log local0
+
+defaults
+  mode http
+  timeout connect 5s
+  timeout client  30s
+  timeout server  30s
+
+frontend https-in
+  bind *:80
+
+  acl hafifa hdr(host) -i ilovehafifa.com
+  acl clouds hdr(host) -i iloveclouds.com
+
+  use_backend hafifa_backend if hafifa
+  use_backend clouds_backend if clouds
+
+backend hafifa_backend
+  server web1 192.168.56.109:80 check
+
+backend clouds_backend
+  server web2 192.168.56.107:80 check

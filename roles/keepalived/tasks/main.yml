@@ -1,0 +1,28 @@
+- name: Install keepalived
+  dnf:
+    name: keepalived
+    state: present
+
+- name: Deploy keepalived config
+  template:
+    src: keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+
+- name: Restart keepalived
+  service:
+    name: keepalived
+    state: restarted
+
+
+#- name: Render keepalived config (MASTER)
+# template:
+#   src: master.conf.j2
+#   dest: /etc/keepalived/keepalived.conf
+# when: inventory_hostname == "proxy1"
+#
+#- name: Render keepalived config (BACKUP)
+# template:
+#   src: backup.conf.j2 dest: /etc/keepalived/keepalived.conf
+# when: inventory_hostname == "proxy2"
+
+    

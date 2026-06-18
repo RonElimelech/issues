@@ -1,0 +1,21 @@
+- name: Ensure nginx html directory exists
+  file:
+    path: /usr/share/nginx/html
+    state: directory
+
+- name: Install nginx
+  dnf:
+    name: nginx
+    state: present
+
+- name: Copy hafifa site
+  copy:
+    src: hafifa.html
+    dest: /usr/share/nginx/html/index.html
+  when: inventory_hostname == "webserver1"
+
+- name: Copy clouds site
+  copy:
+    src: clouds.html
+    dest: /usr/share/nginx/html/index.html
+  when: inventory_hostname == "webserver2"

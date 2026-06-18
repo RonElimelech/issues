@@ -1,0 +1,15 @@
+- name: Install base packages
+  dnf:
+    name:
+      - curl
+      - net-tools
+      - vim-enhanced
+    update_cache: yes
+
+- name: Add host entries
+  blockinfile:
+    path: /etc/hosts
+    block: |
+      192.168.56.110 proxy1
+      192.168.56.108 proxy2
+      192.168.56.200 ilovehafifa.com iloveclouds.com
