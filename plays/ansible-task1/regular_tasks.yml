@@ -1,0 +1,12 @@
+- name: cron append date
+  hosts: proxy
+  become: yes
+
+  tasks:
+    - name: append file every hour
+      ansible.builtin.cron:
+        name: create and append
+        user : root
+        minute: "0"
+        hour: "*"
+        job: "date >> /var/log/time.log"
