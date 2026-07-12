@@ -1,48 +1,28 @@
-vrrp_instance VI_1 {
-  state MASTER
-  interface eth1
-  virtual_router_id 51
-  priority 100
-  advert_int 1
-
-  authentication {
-    auth_type PASS
-    auth_pass 1111
-  }
-
-  virtual_ipaddress {
-    192.168.56.200
-  }
+vrrp_script chk_haproxy {
+    script "pidof haproxy"
+    interval 2
+    weight -20
+    fall 2
+    rise 2
 }
 
-
 vrrp_instance VI_1 {
-  state BACKUP
-  interface eth1
-  virtual_router_id 51
-  priority 90
-  advert_int 1
+    state {{ keepalived_state }}
+    interface {{ proxy_interface }}
+    virtual_router_id {{ keepalived_virtual_router_id }}
+    priority {{ keepalived_priority }}
+    advert_int 1
 
-  authentication {
-    auth_type PASS
-    auth_pass 1111
-  }
+    authentication {
+        auth_type PASS
+        auth_pass {{ keepalived_auth_pass }}
+    }
 
-  virtual_ipaddress {
-    192.168.56.200
-  }
+    virtual_ipaddress {
+        {{ vip }}
+    }
+
+    track_script {
+        chk_haproxy
+    }
 }
-
-
-
-- name: Render MASTER config
-  template:
-    src: master.conf.j2
-    dest: /etc/keepalived/keepalived.conf
-  when: inventory_hostname == "proxy1"
-
-- name: Render BACKUP config
-  template:
-    src: backup.conf.j2
-    dest: /etc/keepalived/keepalived.conf
-  when: inventory_hostname == "proxy2"

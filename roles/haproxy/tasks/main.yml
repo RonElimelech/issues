@@ -3,17 +3,58 @@
     name: haproxy
     state: present
 
+- name: Create HAProxy certificate directory
+  file:
+    path: /etc/haproxy/certs
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy SSL certificates
+  copy:
+    src: "certs/{{ item }}"
+    dest: "/etc/haproxy/certs/{{ item }}"
+    owner: root
+    group: root
+    mode: '0600'
+  loop:
+    - ilovehafifa.pem
+    - iloveclouds.pem
+  notify: Restart HAProxy
+
 - name: Deploy HAProxy config
   template:
     src: haproxy.cfg.j2
     dest: /etc/haproxy/haproxy.cfg
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart HAProxy
 
-- name: Restart HAProxy
+- name: Open HTTP service on proxies
+  firewalld:
+    service: http
+    permanent: true
+    immediate: true
+    state: enabled
+
+- name: Open HTTPS service on proxies
+  firewalld:
+    service: https
+    permanent: true
+    immediate: true
+    state: enabled
+
+- name: Open VRRP protocol for keepalived
+  firewalld:
+    rich_rule: 'rule protocol value="vrrp" accept'
+    permanent: true
+    immediate: true
+    state: enabled
+
+- name: Enable and start HAProxy
   service:
     name: haproxy
-    state: restarted
-
-- name: Copy certificates
-  copy:
-    src: certs/
-    dest: /etc/haproxy/certs/
+    state: started
+    enabled: true

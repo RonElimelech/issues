@@ -1,0 +1,19 @@
+vip: 192.168.56.200
+
+proxy_interface: eth1
+keepalived_virtual_router_id: 51
+keepalived_auth_pass: "1111"
+
+domains:
+  hafifa: ilovehafifa.com
+  clouds: iloveclouds.com
+
+webservers:
+  hafifa:
+    host: webserver1
+    ip: 192.168.56.111
+    port: 443
+  clouds:
+    host: webserver2
+    ip: 192.168.56.112
+    port: 443

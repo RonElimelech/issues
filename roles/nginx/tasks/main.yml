@@ -1,21 +1,72 @@
-- name: Ensure nginx html directory exists
-  file:
-    path: /usr/share/nginx/html
-    state: directory
-
 - name: Install nginx
   dnf:
     name: nginx
     state: present
 
-- name: Copy hafifa site
+- name: Create nginx SSL directory
+  file:
+    path: /etc/nginx/certs
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy SSL certificate for hafifa
+  copy:
+    src: certs/ilovehafifa.pem
+    dest: /etc/nginx/certs/site.pem
+    owner: root
+    group: root
+    mode: '0600'
+  when: site_name == "hafifa"
+  notify: Restart nginx
+
+- name: Copy SSL certificate for clouds
+  copy:
+    src: certs/iloveclouds.pem
+    dest: /etc/nginx/certs/site.pem
+    owner: root
+    group: root
+    mode: '0600'
+  when: site_name == "clouds"
+  notify: Restart nginx
+
+- name: Copy hafifa html page
   copy:
     src: hafifa.html
     dest: /usr/share/nginx/html/index.html
-  when: inventory_hostname == "webserver1"
+    owner: root
+    group: root
+    mode: '0644'
+  when: site_name == "hafifa"
 
-- name: Copy clouds site
+- name: Copy clouds html page
   copy:
     src: clouds.html
     dest: /usr/share/nginx/html/index.html
-  when: inventory_hostname == "webserver2"
+    owner: root
+    group: root
+    mode: '0644'
+  when: site_name == "clouds"
+
+- name: Deploy nginx HTTPS configuration
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart nginx
+
+- name: Open HTTPS service on webservers
+  firewalld:
+    service: https
+    permanent: true
+    immediate: true
+    state: enabled
+
+- name: Enable and start nginx
+  service:
+    name: nginx
+    state: started
+    enabled: true

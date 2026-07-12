@@ -3,26 +3,17 @@
     name: keepalived
     state: present
 
-- name: Deploy keepalived config
+- name: Deploy keepalived configuration
   template:
     src: keepalived.conf.j2
     dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart keepalived
 
-- name: Restart keepalived
+- name: Enable and start keepalived
   service:
     name: keepalived
-    state: restarted
-
-
-#- name: Render keepalived config (MASTER)
-# template:
-#   src: master.conf.j2
-#   dest: /etc/keepalived/keepalived.conf
-# when: inventory_hostname == "proxy1"
-#
-#- name: Render keepalived config (BACKUP)
-# template:
-#   src: backup.conf.j2 dest: /etc/keepalived/keepalived.conf
-# when: inventory_hostname == "proxy2"
-
-    
+    state: started
+    enabled: true

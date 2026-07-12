@@ -2,14 +2,36 @@
   dnf:
     name:
       - curl
-      - net-tools
       - vim-enhanced
+      - net-tools
+      - ca-certificates
+      - firewalld
+    state: present
     update_cache: yes
 
-- name: Add host entries
+
+- name: Enable and start firewalld
+  service:
+    name: firewalld
+    state: started
+    enabled: true
+
+- name: Add project host entries
   blockinfile:
     path: /etc/hosts
+    marker: "# {mark} ANSIBLE HA PROJECT HOSTS"
     block: |
-      192.168.56.110 proxy1
-      192.168.56.108 proxy2
-      192.168.56.200 ilovehafifa.com iloveclouds.com
+      192.168.56.113 proxy1
+      192.168.56.114 proxy2
+      192.168.56.111 webserver1
+      192.168.56.112 webserver2
+      {{ vip }} {{ domains.hafifa }} {{ domains.clouds }}
+
+- name: Copy Root CA certificate
+  copy:
+    src: certs/rootCA.crt
+    dest: /etc/pki/ca-trust/source/anchors/ha-project-rootCA.crt
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Update CA trust

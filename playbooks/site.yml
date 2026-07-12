@@ -1,18 +1,18 @@
 - name: Common setup
   hosts: all
-  become: yes
+  become: true
   roles:
     - common
 
-- name: Install webservers
+- name: Install and configure Nginx webservers
   hosts: webservers
-  become: yes
+  become: true
   roles:
     - nginx
 
-- name: Install proxies
+- name: Install and configure HAProxy and Keepalived
   hosts: proxies
-  become: yes
+  become: true
   roles:
     - haproxy
     - keepalived

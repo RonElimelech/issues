@@ -1,23 +1,40 @@
 global
-  log /dev/log local0
+    log /dev/log local0
+    log /dev/log local1 notice
+    daemon
+    maxconn 2048
 
 defaults
-  mode http
-  timeout connect 5s
-  timeout client  30s
-  timeout server  30s
+    log global
+    mode http
+    option httplog
+    option dontlognull
+    option forwardfor
+    timeout connect 5s
+    timeout client  50s
+    timeout server  50s
+
+frontend http-in
+    bind *:80
+    redirect scheme https code 301
 
 frontend https-in
-  bind *:80
+    bind *:443 ssl crt /etc/haproxy/certs/
 
-  acl hafifa hdr(host) -i ilovehafifa.com
-  acl clouds hdr(host) -i iloveclouds.com
+    acl host_hafifa hdr(host) -i {{ domains.hafifa }}
+    acl host_clouds hdr(host) -i {{ domains.clouds }}
 
-  use_backend hafifa_backend if hafifa
-  use_backend clouds_backend if clouds
+    use_backend hafifa_backend if host_hafifa
+    use_backend clouds_backend if host_clouds
+
+    default_backend hafifa_backend
 
 backend hafifa_backend
-  server web1 192.168.56.109:80 check
+    option httpchk GET /
+    http-request set-header X-Forwarded-Proto https
+    server web1 {{ webservers.hafifa.ip }}:{{ webservers.hafifa.port }} ssl verify none check
 
 backend clouds_backend
-  server web2 192.168.56.107:80 check
+    option httpchk GET /
+    http-request set-header X-Forwarded-Proto https
+    server web2 {{ webservers.clouds.ip }}:{{ webservers.clouds.port }} ssl verify none check
