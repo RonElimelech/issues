@@ -11,9 +11,9 @@ domains:
 webservers:
   hafifa:
     host: webserver1
-    ip: 192.168.56.111
+    ip: 192.168.56.121
     port: 443
   clouds:
     host: webserver2
-    ip: 192.168.56.112
+    ip: 192.168.56.119
     port: 443

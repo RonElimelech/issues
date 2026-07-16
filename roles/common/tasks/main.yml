@@ -21,10 +21,10 @@
     path: /etc/hosts
     marker: "# {mark} ANSIBLE HA PROJECT HOSTS"
     block: |
-      192.168.56.113 proxy1
-      192.168.56.114 proxy2
-      192.168.56.111 webserver1
-      192.168.56.112 webserver2
+      192.168.56.120 proxy1
+      192.168.56.122 proxy2
+      192.168.56.121 webserver1
+      192.168.56.119 webserver2
       {{ vip }} {{ domains.hafifa }} {{ domains.clouds }}
 
 - name: Copy Root CA certificate

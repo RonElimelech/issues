@@ -1,4 +1,6 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
-ansible-playbook playbooks/site.yml
+ansible-playbook playbooks/site.yml \
+  --ask-pass \
+  --ask-become-pass

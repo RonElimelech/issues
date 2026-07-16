@@ -1,5 +1,5 @@
-- name: Common setup
-  hosts: all
+- name: Prepare all managed servers
+  hosts: managed_nodes
   become: true
   roles:
     - common
