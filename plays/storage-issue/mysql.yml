@@ -1,6 +1,5 @@
 - name: Configure MySQL servers
   hosts: database
   become: true
-
   roles:
     - sample-mysql

@@ -4,9 +4,9 @@ tasks:
  - name: Ensure Apache is installed
    ansible.builtin.package:
      name:
-             - httpd
-             - mod_ssl
-             - php
+       - httpd
+       - mod_ssl
+       - php
      state: present
  
  - name: Start Apache service
@@ -18,11 +18,11 @@ tasks:
 
  - name: firewall configuration
    ansible.posix.firewalld:
-           port:
-                   - 80/tcp
-                   - 443/tcp
-           permanent: true
-           state: enabled
+     port:
+       - 80/tcp
+       - 443/tcp
+     permanent: true
+     state: enabled
 
  - name: Create index.html from template
    ansible.builtin.template:
