@@ -1,0 +1,19 @@
+- name: Install keepalived
+  dnf:
+    name: keepalived
+    state: present
+
+- name: Deploy keepalived configuration
+  template:
+    src: keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart keepalived
+
+- name: Enable and start keepalived
+  service:
+    name: keepalived
+    state: started
+    enabled: true
