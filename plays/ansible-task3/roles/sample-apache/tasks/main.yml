@@ -1,0 +1,34 @@
+tasks:
+  - name: Ensure Apache is installed
+    ansible.builtin.package:
+      name:
+        - httpd
+        - mod_ssl
+        - php
+      state: present
+
+  - name: Start Apache service
+    ansible.builtin.service:
+      name: httpd
+      state: started
+      enabled: true
+
+  - name: Allow HTTP
+    ansible.posix.firewalld:
+      port: 80/tcp
+      permanent: true
+      state: enabled
+      immediate: true
+
+  - name: Allow HTTPS
+    ansible.posix.firewalld:
+      port: 443/tcp
+      permanent: true
+      state: enabled
+      immediate: true
+
+  - name: Create index.html from template
+    ansible.builtin.template:
+      src: index.html.j2
+      dest: /var/www/html/index.html
+    notify: restart apache service

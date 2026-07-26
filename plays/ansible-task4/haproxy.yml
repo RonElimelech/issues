@@ -1,0 +1,15 @@
+- name: Configure HAProxy
+  hosts: proxy
+  become: true
+  vars:
+    haproxy_backend_mode: http
+    haproxy_backend_balance_method: roundrobin
+    haproxy_backend_servers:
+      - name: web1
+        address: ansible1.hl.local:80
+      - name: web2
+        address: ansible2.hl.local:80
+    haproxy_frontend_mode: http
+    haproxy_frontend_port: 80
+  roles:
+    - geerlingguy.haproxy

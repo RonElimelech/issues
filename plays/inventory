@@ -1,0 +1,8 @@
+[proxy]
+localhost ansible_connection=local
+
+[webservers]
+localhost ansible_connection=local
+
+[database]
+localhost ansible_connection=local
