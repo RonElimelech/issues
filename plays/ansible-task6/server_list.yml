@@ -1,7 +1,6 @@
 - name: jinja2 file
-  hosts: database
+  hosts: database  
   become: yes
-
   tasks:
     - name: create server_list
       ansible.builtin.template:

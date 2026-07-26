@@ -1,7 +1,6 @@
 - name: cron append date
   hosts: proxy
   become: yes
-
   tasks:
     - name: append file every hour
       ansible.builtin.cron:

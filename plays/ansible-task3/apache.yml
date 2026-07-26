@@ -1,4 +1,3 @@
 - name: use sample-apache
-  hosts: database
-  
+  hosts: database  
   roles: sample-apache 
