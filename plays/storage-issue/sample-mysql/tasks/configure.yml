@@ -1,0 +1,22 @@
+- name: Deploy my.cnf
+  template:
+    src: my.cnf.j2
+    dest: /etc/my.cnf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart mysql
+
+- name: Install PyMySQL
+  package:
+    name: python3-PyMySQL
+    state: present
+
+- name: Set MySQL root password
+  mysql_user:
+    name: root
+    host: localhost
+    password: devops
+    login_unix_socket: /var/lib/mysql/mysql.sock
+    check_implicit_admin: true
+    state: present
